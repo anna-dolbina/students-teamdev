@@ -7,8 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="API" exported="" />
-    <orderEntry type="module" module-name="FiniteStateMachine" />
+    <orderEntry type="module" module-name="Compiler" />
+    <orderEntry type="module" module-name="Utils" />
   </component>
 </module>
 

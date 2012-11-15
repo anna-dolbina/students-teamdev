@@ -1,8 +1,8 @@
 package parser;
 
-import lexer.UnknownLexemException;
+import calculator.CalculatorImpl;
+import compiler.exception.UnknownLexemeException;
 import org.junit.Test;
-import сalculator.Calculator;
 
 import java.math.BigDecimal;
 
@@ -21,10 +21,10 @@ public class PoweringTest {
     public void PowerTest() throws Exception{
         String expression="33+3^(1+2^2)+5";
         try {
-            BigDecimal result= Calculator.evaluateExpression(expression);
+            BigDecimal result= new CalculatorImpl().evaluate(expression);
             System.out.println(result.doubleValue());
             assertTrue("Test failed: invalid calculation",result.doubleValue()==281.0);
-        } catch (UnknownLexemException e) {
+        } catch (UnknownLexemeException e) {
             fail("Exception was thrown. " + e.getLocalizedMessage());
         }
     }

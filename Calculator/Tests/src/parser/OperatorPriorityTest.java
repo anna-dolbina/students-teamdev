@@ -1,8 +1,8 @@
 package parser;
 
-import lexer.UnknownLexemException;
+import calculator.CalculatorImpl;
+import compiler.exception.UnknownLexemeException;
 import org.junit.Test;
-import сalculator.Calculator;
 
 import java.math.BigDecimal;
 
@@ -21,10 +21,10 @@ public class OperatorPriorityTest {
     public void OperatorPriorityTest() throws Exception{
         String expression="3+123.45*4+3*(2*33+(2*3-5*(3-2))-6)";
         try {
-            BigDecimal result= Calculator.evaluateExpression(expression);
+            BigDecimal result= new CalculatorImpl().evaluate(expression);
             System.out.println(result.doubleValue());
             assertTrue("Test failed: invalid calculation",result.doubleValue()==679.8);
-        } catch (UnknownLexemException e) {
+        } catch (UnknownLexemeException e) {
             fail("Exception was thrown. " + e.getLocalizedMessage());
         }
     }

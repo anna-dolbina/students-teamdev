@@ -1,5 +1,6 @@
-import lexer.UnknownLexemException;
-import сalculator.Calculator;
+import calculator.Calculator;
+import calculator.CalculatorImpl;
+import compiler.exception.CompilationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,11 +20,12 @@ public class CalculatorConsoleClient {
             System.out.println("Введите выражение для вычисления.");
             BufferedReader input= new BufferedReader(new InputStreamReader(System.in));
             String expression=input.readLine();
-            BigDecimal result=Calculator.evaluateExpression(expression);
+            final Calculator calculator=new CalculatorImpl();
+            BigDecimal result= calculator.evaluate(expression);
             System.out.println("Результат вычислений: "+result.doubleValue());
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (UnknownLexemException e) {
+        } catch (CompilationException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
