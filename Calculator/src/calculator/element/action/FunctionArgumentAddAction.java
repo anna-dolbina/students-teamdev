@@ -4,13 +4,7 @@ import calculator.CalculatorContextState;
 import compiler.exception.IllegalActionException;
 import calculator.CalculatorParserContext;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 12.11.12
- * Time: 23:59
- * To change this template use File | Settings | File Templates.
- */
+
 public class FunctionArgumentAddAction extends AbstractAction {
     @Override
     public boolean performAction(CalculatorParserContext context) throws IllegalActionException {

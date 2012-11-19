@@ -6,8 +6,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.fail;
 
-/**
- */
 public class DivisionTest {
     @Test
     public void divisionByZeroTest() throws Exception{
@@ -15,7 +13,7 @@ public class DivisionTest {
 
         try {
             new CalculatorImpl().evaluate(expression);
-            fail("Exception wasn't thrown");
+            fail("Exception wasn't thrown when testing division by zero");
         } catch (CompilationException e) {
             System.out.println(e.getLocalizedMessage());
         }

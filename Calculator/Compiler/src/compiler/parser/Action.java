@@ -3,16 +3,10 @@ package compiler.parser;
 
 import compiler.exception.IllegalActionException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 10.11.12
- * Time: 20:24
- * To change this template use File | Settings | File Templates.
- */
-public interface Action<Lexem extends Enum,
-        NonTerminal extends Enum,
-        Context extends ParserContext<Lexem,NonTerminal,Result>,
+
+public interface Action<LexemeType extends Enum,
+        ContextState extends Enum,
+        Context extends ParserContext<LexemeType, ContextState,Result>,
         Result> {
     public boolean performAction(Context context) throws IllegalActionException;
 }

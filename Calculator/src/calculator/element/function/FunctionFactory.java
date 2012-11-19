@@ -4,13 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 10.11.12
- * Time: 16:08
- * To change this template use File | Settings | File Templates.
- */
+
 public class FunctionFactory {
     private static final Map<String, Function> functions =
             new HashMap<String, Function>() {{
@@ -18,6 +12,8 @@ public class FunctionFactory {
                 put("max", new MaximumFunction());
                 put("sum", new SummingFunction());
                 put("avg", new AverageFunction());
+                put("sqrt", new SquareRootFunction());
+                put("pi",new PiFunction());
             }};
 
     public Function create(String functionRepresentation) {

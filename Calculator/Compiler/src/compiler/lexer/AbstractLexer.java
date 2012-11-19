@@ -21,7 +21,7 @@ public abstract class AbstractLexer<LexemeType extends Enum,
        final ArrayList<Lexeme<LexemeType>> lexemeStream= new ArrayList<Lexeme<LexemeType>>();
        final Lexeme<LexemeType> endLexeme=recognizer.getEndOfInputLexeme();
        int currentPosition=0;
-       Lexeme<LexemeType> recognizedLexeme=null;
+       Lexeme<LexemeType> recognizedLexeme;
 
        currentPosition=skipWhitespaces(input,currentPosition);
 

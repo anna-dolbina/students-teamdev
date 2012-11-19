@@ -25,10 +25,10 @@ public abstract class AbstractCompiler<LexemeType extends Enum,
 
     @Override
     public Result compile(String input) throws CompilationException {
-        final Lexer lexer=new AbstractLexer(){
+        final Lexer<LexemeType> lexer=new AbstractLexer<LexemeType,LexemeRecognizerImpl>(){
 
             @Override
-            protected LexemeRecognizer getLexemeRecognizer() {
+            protected LexemeRecognizerImpl getLexemeRecognizer() {
                 return getLexemeRecognizerImpl();
             }
         };
@@ -43,9 +43,8 @@ public abstract class AbstractCompiler<LexemeType extends Enum,
         };
         ArrayList<Lexeme<LexemeType>> lexemeStream =lexer.generateLexemeStream(input);
         context.init(lexemeStream, getActionTableImpl().getStartContextState());
-        final Result result=parser.run(context);
 
-        return result;
+        return parser.run(context);
     }
 
 

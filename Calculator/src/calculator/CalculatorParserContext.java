@@ -12,42 +12,36 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.NoSuchElementException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 10.11.12
- * Time: 22:39
- * To change this template use File | Settings | File Templates.
- */
+
 public class CalculatorParserContext implements ParserContext<CalculatorLexeme,CalculatorContextState,BigDecimal> {
-    private final Deque<CalculatorContextState> controlSymbols = new ArrayDeque<CalculatorContextState>();
+    private final Deque<CalculatorContextState> stateStack = new ArrayDeque<CalculatorContextState>();
     private ArrayList<Lexeme<CalculatorLexeme>> lexemeStream =null;
-    private int currentPosition=0;
-    private final Deque<BigDecimal> operandStack = new ArrayDeque<BigDecimal>();
-    private final Deque<BinaryOperator> operatorStack = new ArrayDeque<BinaryOperator>();
-    private final Deque<Function> functionStack = new ArrayDeque<Function>();
-    private final Deque<Integer> functionBracketStack=new ArrayDeque<Integer>();
-    private final Deque<BigDecimal>argumentsStack=new ArrayDeque<BigDecimal>();
-    private final Deque<Integer> bracketStack = new ArrayDeque<Integer>();
-    private final Deque<Integer> argumentBracketStack = new ArrayDeque<Integer>();
+    private int currentPosition=0;/*The position in the lexeme stream*/
+
+    private final Deque<BigDecimal> operandStack = new ArrayDeque<BigDecimal>();/*Main stack with operands*/
+    private final Deque<BinaryOperator> operatorStack = new ArrayDeque<BinaryOperator>();/*Stack with binary operators*/
+    private final Deque<Integer> bracketStack = new ArrayDeque<Integer>(); /*Stack with common brackets*/
+
+    private final Deque<Function> functionStack = new ArrayDeque<Function>(); /*Stack with functions*/
+    private final Deque<BigDecimal> argumentStack =new ArrayDeque<BigDecimal>(); /*Stack with arguments for functions*/
+    private final Deque<Integer> functionBracketStack=new ArrayDeque<Integer>();/*Stack with markers; a marker shows where the arguments for a current function begin in argument stack*/
+    private final Deque<Integer> argumentBracketStack = new ArrayDeque<Integer>(); /*Stack with markers; a marker shows where a function argument begins in operand stack */
 
 
     @Override
     public void init(ArrayList<Lexeme<CalculatorLexeme>> lexemeStream,CalculatorContextState startState) {
         this.lexemeStream=lexemeStream;
-        controlSymbols.push(startState);
+        stateStack.push(startState);
     }
 
     @Override
     public CalculatorContextState getCurrentState() throws NoSuchElementException{
-        System.out.println("---> "+controlSymbols);
-        return controlSymbols.pop();
+        return stateStack.pop();
     }
 
     @Override
     public void setCurrentState(CalculatorContextState state) {
-        controlSymbols.push(state);
-        System.out.println(controlSymbols);
+        stateStack.push(state);
     }
 
     @Override
@@ -58,7 +52,8 @@ public class CalculatorParserContext implements ParserContext<CalculatorLexeme,C
       public BigDecimal getResult() {
         if(operandStack.size()!=1) throw new IllegalStateException("Operand stack must contain only one operand but:"
                 +operandStack+"\nOperator stack: "+operatorStack+
-                "\n Current lexem: "+ lexemeStream.get(currentPosition).getLexemeType());
+                "\n Current lexeme: "+ lexemeStream.get(currentPosition).getLexemeType()+
+                "\n Current state stack:"+stateStack);
         return operandStack.peek();
     }
 
@@ -73,7 +68,6 @@ public class CalculatorParserContext implements ParserContext<CalculatorLexeme,C
 
     public void moveToNextLexeme(){
         currentPosition++;
-        System.out.println(getCurrentLexeme().getLexemeType()+" "+getCurrentLexeme().getRepresentation());
     }
 
 
@@ -89,6 +83,7 @@ public class CalculatorParserContext implements ParserContext<CalculatorLexeme,C
     public void addOperator(BinaryOperator operator) {
         operatorStack.push(operator);
     }
+
     public void applyOperator() throws CalculationException {
         BinaryOperator operator;
         BigDecimal operand2;
@@ -107,39 +102,53 @@ public class CalculatorParserContext implements ParserContext<CalculatorLexeme,C
         final BigDecimal result=operator.calculate(operand1,operand2);
         operandStack.push(result);
     }
-    //Свернуть одноприоритетные операторы до ближайшей скобки
-    //                                  или оператора с другим приоритетом,
-    //                                  или начала выражения
+
+    //Apply operators with this priority until the nearest opened bracket,
+    //                                  or function bracket,
+    //                                  or the operator wit another priority,
+    //                                  or the beginning of the expression
     public void applyOperatorsWithPriority(int priority) throws CalculationException {
-        int previousSize;
-        try{
-            previousSize=bracketStack.peek();
-        }catch(Exception e){
-            previousSize=0;
+        int lastBracketOpened;
+        if(isLastFunctionBracketOpened()) {
+            lastBracketOpened=argumentBracketStack.peek();
         }
-        while((!isOperatorStackEmpty())&&(getFirstOperatorPriority()==priority)&&(operandStack.size()!=previousSize+1))
+       else try{
+            lastBracketOpened=bracketStack.peek();
+        }catch(Exception e){
+            lastBracketOpened=0;
+        }
+        while((!isOperatorStackEmpty())&&(getFirstOperatorPriority()==priority)&&(operandStack.size()!=(lastBracketOpened+1)))
             applyOperator();
 
     }
-    //Свернуть операторы внутри скобок и закрыть скобку
+    public boolean isLastFunctionBracketOpened(){
+        int lastBracketOpened;
+        if(argumentBracketStack.isEmpty()) return false;
+
+        try{
+            lastBracketOpened=bracketStack.peek();
+        }catch(Exception e){
+            return true;
+        }
+        return lastBracketOpened < argumentBracketStack.peek();
+    }
+    //Apply operators inside brackets and close the bracket
     public void closeBracket() throws CalculationException {
-        int previousSize, lastArgumentStart=0;
+        int lastBracketOpened;
+
         try{
-            lastArgumentStart=argumentBracketStack.peek();
-        }catch(Exception e){}
-        try{
-          previousSize=bracketStack.pop();
+            lastBracketOpened=bracketStack.pop();
         }catch(NoSuchElementException e){
             throw new CalculationException("Cannot close bracket: missing opening bracket");
         }
 
-        while(operandStack.size()!=previousSize+1){
+        while(operandStack.size()!=lastBracketOpened+1){
             applyOperator();
         }
 
     }
     public void openFunctionBracket(){
-        functionBracketStack.push(argumentsStack.size());
+        functionBracketStack.push(argumentStack.size());
         argumentBracketStack.push(operandStack.size());
     }
     public void addFunction(Function function){
@@ -147,36 +156,30 @@ public class CalculatorParserContext implements ParserContext<CalculatorLexeme,C
     }
     public void addArgument(){
 
-        argumentsStack.push(operandStack.pop());
-        System.out.println(argumentsStack);
+        argumentStack.push(operandStack.pop());
     }
     public void applyFunction() throws CalculationException {
-
-        final int previousSize=functionBracketStack.pop();
-        final BigDecimal[] arguments=new BigDecimal[argumentsStack.size()-previousSize];
+        final int lastFunctionBracketOpened=functionBracketStack.pop();
+        final BigDecimal[] arguments=new BigDecimal[argumentStack.size()-lastFunctionBracketOpened];
         Function function;
         try{
             function=functionStack.pop();
         }catch(NoSuchElementException e){
            throw new CalculationException("Cannot find function to apply");
         }
-        for(int i=argumentsStack.size()-previousSize-1;i>=0;i--){
-            arguments[i]=argumentsStack.pop();
+        for(int i= argumentStack.size()-lastFunctionBracketOpened-1;i>=0;i--){
+            arguments[i]= argumentStack.pop();
+
         }
+
         BigDecimal result=function.calculate(arguments);
-        argumentsStack.push(result);
+        operandStack.push(result);
         argumentBracketStack.pop();
 
     }
     public void closeFunctionBracket() throws CalculationException {
+        addArgument();
         applyFunction();
-        if(isFunctionStackEmpty()){
-            operandStack.push(argumentsStack.pop());
-        }
-    }
-
-    private boolean isFunctionStackEmpty() {
-        return functionStack.isEmpty();
     }
 
 

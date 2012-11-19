@@ -19,7 +19,7 @@ public class DivisionBinaryOperator extends AbstractBinaryOperator {
     @Override
     public BigDecimal calculate(BigDecimal left, BigDecimal right) throws CalculationException {
         checkOperands(left, right);
-        System.out.println(left+"/"+right);
+
         if(right.doubleValue()==0.0) throw new CalculationException("A number can't be divided by zero");
         return left.divide(right);
     }

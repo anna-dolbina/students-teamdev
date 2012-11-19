@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class CalculatorLexemeRecognizer implements LexemeRecognizer<CalculatorLexeme> {
     private static final Map<String, CalculatorLexeme>
-            LEXEMS = new HashMap<String,CalculatorLexeme>() {{
+            LEXEMES = new HashMap<String,CalculatorLexeme>() {{
         put("+", CalculatorLexeme.PLUS);
         put("-", CalculatorLexeme.MINUS);
         put("*", CalculatorLexeme.MULTIPLY);
@@ -33,6 +33,8 @@ public class CalculatorLexemeRecognizer implements LexemeRecognizer<CalculatorLe
         put("min", CalculatorLexeme.FUNCTION);
         put("max", CalculatorLexeme.FUNCTION);
         put("avg", CalculatorLexeme.FUNCTION);
+        put("sqrt", CalculatorLexeme.FUNCTION);
+        put("pi", CalculatorLexeme.FUNCTION);
     }};
 
 
@@ -44,15 +46,15 @@ public class CalculatorLexemeRecognizer implements LexemeRecognizer<CalculatorLe
         String parseString=context.substring(currentPosition);
         if(parseString.isEmpty()) return new Lexeme<CalculatorLexeme>(CalculatorLexeme.EOF,"");
 
-        for(String representation:LEXEMS.keySet()){
+        for(String representation: LEXEMES.keySet()){
 
             if(parseString.startsWith(representation)){
 
-                return new Lexeme<CalculatorLexeme>(LEXEMS.get(representation),representation);
+                return new Lexeme<CalculatorLexeme>(LEXEMES.get(representation),representation);
             }
         }
         NUMBER_PARSER.setParseIntegerOnly(false);
-        Number number=null;
+        Number number;
         try {
             number = NUMBER_PARSER.parse(parseString);
         } catch (ParseException e) {

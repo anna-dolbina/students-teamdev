@@ -6,13 +6,7 @@ import calculator.CalculatorParserContext;
 import calculator.element.operator.BinaryOperator;
 import calculator.element.operator.DivisionBinaryOperator;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 11.11.12
- * Time: 16:08
- * To change this template use File | Settings | File Templates.
- */
+
 public class DivideOperatorAddAction extends AbstractAction {
     @Override
     public boolean performAction(CalculatorParserContext context) throws IllegalActionException {

@@ -7,13 +7,7 @@ import compiler.lexer.Lexeme;
 
 import java.util.NoSuchElementException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 10.11.12
- * Time: 21:51
- * To change this template use File | Settings | File Templates.
- */
+
 public abstract class AbstractParser<LexemeType extends Enum,
         ContextState extends Enum,
         Context extends ParserContext<LexemeType,ContextState,Result>,
@@ -33,7 +27,7 @@ public abstract class AbstractParser<LexemeType extends Enum,
          private boolean moveForward(Context context) throws UnknownActionException, IllegalActionException {
             final Table actionTable= getActionTable();
 
-            ContextState state=null;
+            ContextState state;
             try{
                    state=context.getCurrentState();
             }catch(NoSuchElementException e){
@@ -41,8 +35,8 @@ public abstract class AbstractParser<LexemeType extends Enum,
             }
             if(state==null) return false;
             final Lexeme<LexemeType> lexeme=context.getCurrentLexeme();
-            final Action action=actionTable.getAction(lexeme,state);
-            boolean result=false;
+            final Action action=actionTable.getAction(lexeme, state);
+            boolean result;
             result=action.performAction(context);
 
             return result;

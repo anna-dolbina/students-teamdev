@@ -6,13 +6,7 @@ import calculator.CalculatorParserContext;
 import calculator.element.operator.BinaryOperator;
 import calculator.element.operator.MultiplicationBinaryOperator;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 11.11.12
- * Time: 14:24
- * To change this template use File | Settings | File Templates.
- */
+
 public class MultiplyOperatorAddAction extends AbstractAction {
 
     @Override

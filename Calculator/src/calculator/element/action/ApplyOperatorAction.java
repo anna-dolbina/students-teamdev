@@ -4,13 +4,7 @@ import compiler.exception.IllegalActionException;
 import calculator.CalculatorParserContext;
 import calculator.element.exception.CalculationException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 11.11.12
- * Time: 13:54
- * To change this template use File | Settings | File Templates.
- */
+
 public class ApplyOperatorAction extends AbstractAction {
     private int priority=1;
     public ApplyOperatorAction(int priority) {

@@ -1,14 +1,11 @@
 package parser;
 
 import calculator.CalculatorImpl;
-import compiler.exception.UnknownLexemeException;
+import compiler.exception.CompilationException;
 import org.junit.Test;
 
 import static org.junit.Assert.fail;
 
-/**
-
- */
 public class CommonCalculatorTest {
     @Test
     public void EmptyStringTest() throws Exception{
@@ -16,14 +13,13 @@ public class CommonCalculatorTest {
 
         try {
             new CalculatorImpl().evaluate(expression);
-            fail("Exception wasn't thrown");
-        } catch (IllegalStateException e) {
+            fail("Exception wasn't thrown when testing empty expression");
+        } catch (CompilationException e) {
             System.out.println(e.getLocalizedMessage());
-        } catch(UnknownLexemeException e){
-            e.printStackTrace();
         }
 
     }
+
 
 
 }

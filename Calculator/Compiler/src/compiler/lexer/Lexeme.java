@@ -2,17 +2,11 @@ package compiler.lexer;
 
 import utils.Pair;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Администратор
- * Date: 14.11.12
- * Time: 2:02
- * To change this template use File | Settings | File Templates.
- */
+
 public class Lexeme<LexemeType extends Enum>{
     private Pair<LexemeType,String> lexemeTypeStringPair=null;
     public Lexeme(LexemeType lexemeType, String representation) {
-        lexemeTypeStringPair=new Pair(lexemeType, representation);
+        lexemeTypeStringPair=new Pair<LexemeType,String>(lexemeType, representation);
     }
     public LexemeType getLexemeType(){
         return lexemeTypeStringPair.getLeft();

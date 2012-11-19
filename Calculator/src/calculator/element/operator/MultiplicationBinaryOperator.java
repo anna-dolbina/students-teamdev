@@ -12,7 +12,6 @@ public class MultiplicationBinaryOperator extends AbstractBinaryOperator {
     public BigDecimal calculate(BigDecimal left, BigDecimal right) {
 
         checkOperands(left, right);
-        System.out.println(left+"*"+right);
         return left.multiply(right);
     }
 }

@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 public class CalculatorImpl implements Calculator{
     private static final CalculatorLexemeRecognizer lexemeRecognizer=new CalculatorLexemeRecognizer();
     private static final CalculatorActionTable actionTable=new CalculatorActionTable();
-    private static final CalculatorParserContext parserContext=new CalculatorParserContext();
 
     private static final Compiler<BigDecimal>
             calculatorCompiler=new AbstractCompiler<CalculatorLexeme,
@@ -33,12 +32,13 @@ public class CalculatorImpl implements Calculator{
 
         @Override
         protected CalculatorParserContext getParserContextImpl() {
-            return parserContext;
+            return new CalculatorParserContext();
         }
     };
     public BigDecimal evaluate( String expression) throws CompilationException {
 
-        final BigDecimal result=calculatorCompiler.compile(expression);
+        final BigDecimal result;
+        result = calculatorCompiler.compile(expression);
         return result;
     }
 }
