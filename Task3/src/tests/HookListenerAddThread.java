@@ -1,8 +1,13 @@
 package tests;
 
+
+
 import hook.Hook;
 import hook.HookEventObject;
 import hook.HookListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * A thread which adds listeners to the specified hook in random moments of time
  * 
@@ -11,6 +16,10 @@ import hook.HookListener;
  */
 public class HookListenerAddThread extends Thread {
 	private final Hook hook;
+	private final static Logger logger;
+	static{
+		logger = LoggerFactory.getLogger(HookListenerAddThread.class);
+	}
 	/**
 	 * Constructs and initializes the instance of this class
 	 * 
@@ -27,8 +36,7 @@ public class HookListenerAddThread extends Thread {
 				@Override
 				public void onHookEvent(HookEventObject event)
 						throws Exception {
-					System.out
-							.println("Thread listener:Active window changed to "
+					logger.info("Thread listener:Event on window "
 									+ event.getSourceWindowHandle());
 
 				}

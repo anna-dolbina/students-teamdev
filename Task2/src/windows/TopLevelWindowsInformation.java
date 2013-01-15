@@ -56,7 +56,7 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 				windowHandles.add(new Integer((int) windowHandle.getValue()));
 				returnValue.setValue(RESULT_OK);
 			} catch (Exception e) {
-				logger.error("Exception caught in callback: "+e.getMessage());
+				logger.error("Exception caught in callback: " + e.getMessage());
 				returnValue.setValue(RESULT_FAIL);
 			}
 
@@ -111,24 +111,21 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 * @return true if all topmost windows were processed; false if something
 	 * went wrong.
 	 */
-	// TODO: minimize number of return statements
 	private long init() {
 		Function enumWindows = user32.getFunction("EnumWindows");
 		EnumWindowsCallback callback = new EnumWindowsCallback();
 		long errorCode = enumWindows.invoke(null, callback, new Int(0));
-		if (errorCode != ERROR_SUCCESS) {
-			callback.dispose();
-			return errorCode;
+		if (errorCode == ERROR_SUCCESS) {
+			List<Integer> handles = callback.getWindowHandles();
+			try {
+				fillInformation(handles);
+			} catch (RuntimeException e) {
+				logger.error("Init exception: " + e.getMessage());
+				errorCode=ERROR_FAIL;
+			}
 		}
-		List<Integer> handles = callback.getWindowHandles();
 		callback.dispose();
-		try {
-			fillInformation(handles);
-			return ERROR_SUCCESS;
-		} catch (RuntimeException e) {
-			logger.error("Init exception: "+e.getMessage());
-			return ERROR_FAIL;
-		}
+		return errorCode;
 
 	}
 
