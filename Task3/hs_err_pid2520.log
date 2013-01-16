@@ -1,0 +1,256 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x59a50923, pid=2520, tid=4944
+#
+# JRE version: 7.0-b147
+# Java VM: Java HotSpot(TM) Client VM (21.0-b17 mixed mode, sharing windows-x86 )
+# Problematic frame:
+# V  [jvm.dll+0x110923]
+#
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0031d000):  JavaThread "main" [_thread_in_vm, id=4944, stack(0x01f50000,0x01fa0000)]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x00630041
+
+Registers:
+EAX=0x0031d000, EBX=0x38942a20, ECX=0x00630041, EDX=0x389417f8
+ESP=0x01f9edec, EBP=0x01f9edf8, ESI=0x37f269c8, EDI=0x0031d000
+EIP=0x59a50923, EFLAGS=0x00010287
+
+Top of Stack: (sp=0x01f9edec)
+0x01f9edec:   37f269c8 38942a20 0031d000 01f9ee34
+0x01f9edfc:   01faa5b7 0031d128 01f9ee4c 00630041
+0x01f9ee0c:   00000000 0031da24 01f9ee14 00000000
+0x01f9ee1c:   01f9ee4c 389417f8 00000000 38942a20
+0x01f9ee2c:   00000000 01f9ee44 01f9ee70 01fa33fb
+0x01f9ee3c:   00000000 01fa8841 00630041 00000000
+0x01f9ee4c:   243dca00 01f9ee50 3811157c 01f9ee7c
+0x01f9ee5c:   38c06728 00000000 38c07238 01f9ee44 
+
+Instructions: (pc=0x59a50923)
+0x59a50903:   06 57 e8 16 2b ef ff a1 18 b0 c0 59 83 c4 08 50
+0x59a50913:   ff 15 c0 41 b9 59 8b 4d 10 c6 80 7c 01 00 00 01
+0x59a50923:   8a 11 c6 80 7c 01 00 00 00 8b 77 28 8b 4e 08 83
+0x59a50933:   39 00 8b 5e 04 88 55 0b 74 05 e8 fe a6 f4 ff 8b 
+
+
+Register to memory mapping:
+
+EAX=0x0031d000 is a thread
+EBX=0x38942a20 is an oop
+{method} 
+ - klass: {other class}
+ECX=0x00630041 is an unknown value
+EDX=0x389417f8 is an oop
+{constant pool cache} 
+ - klass: {other class}
+ESP=0x01f9edec is pointing into the stack for thread: 0x0031d000
+EBP=0x01f9edf8 is pointing into the stack for thread: 0x0031d000
+ESI=0x37f269c8 is an oop
+{constMethod} 
+ - klass: {other class}
+ - method:       0x38942a78 {method} 'getByte' '(Ljava/lang/Object;J)B' in 'sun/misc/Unsafe'
+ - exceptions:   0x37ef0048
+EDI=0x0031d000 is a thread
+
+
+Stack: [0x01f50000,0x01fa0000],  sp=0x01f9edec,  free space=315k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x110923]
+j  sun.misc.Unsafe.getByte(J)B+0
+j  java.nio.DirectByteBuffer.get(I)B+12
+j  com.jniwrapper.g.readByte(I)B+5
+j  com.jniwrapper.WideString.getStrLen(Lcom/jniwrapper/DataBuffer;I)I+31
+j  com.jniwrapper.ZeroTerminatedString.getValue()Ljava/lang/String;+17
+j  com.jniwrapper.Str.getValue()Ljava/lang/String;+4
+j  hook.LastErrorException.retrieveErrorDescription(J)Ljava/lang/String;+98
+j  hook.LastErrorException.<init>(JLjava/lang/String;)V+3
+j  tests.ExceptionTest.lastErrorExceptionThrowing()V+9
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0x122c7e]
+V  [jvm.dll+0x1c9c0e]
+V  [jvm.dll+0x122d0d]
+V  [jvm.dll+0x12dd5e]
+V  [jvm.dll+0x12e36e]
+V  [jvm.dll+0xceee9]
+C  [java.dll+0x7db5]  Java_sun_reflect_NativeMethodAccessorImpl_invoke0+0x15
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+57
+j  org.junit.runners.model.FrameworkMethod$1.runReflectiveCall()Ljava/lang/Object;+15
+j  org.junit.internal.runners.model.ReflectiveCallable.run()Ljava/lang/Object;+1
+j  org.junit.runners.model.FrameworkMethod.invokeExplosively(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+10
+j  org.junit.internal.runners.statements.InvokeMethod.evaluate()V+12
+j  org.junit.runners.ParentRunner.runLeaf(Lorg/junit/runners/model/Statement;Lorg/junit/runner/Description;Lorg/junit/runner/notification/RunNotifier;)V+17
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Lorg/junit/runners/model/FrameworkMethod;Lorg/junit/runner/notification/RunNotifier;)V+32
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$3.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+40
+j  org.junit.runners.ParentRunner.access$000(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+20
+j  org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+72
+j  org.eclipse.jdt.internal.junit.runner.TestExecution.run([Lorg/eclipse/jdt/internal/junit/runner/ITestReference;)V+17
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests([Ljava/lang/String;Ljava/lang/String;Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+61
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+10
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run()V+70
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main([Ljava/lang/String;)V+14
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0x122c7e]
+V  [jvm.dll+0x1c9c0e]
+V  [jvm.dll+0x122d0d]
+V  [jvm.dll+0xa77e4]
+V  [jvm.dll+0xb1b77]
+C  [javaw.exe+0x1fe5]
+C  [javaw.exe+0xa0cb]
+C  [javaw.exe+0xa155]
+C  [KERNEL32.dll+0x133aa]  BaseThreadInitThunk+0x12
+C  [ntdll.dll+0x39ef2]  RtlInitializeExceptionChain+0x63
+C  [ntdll.dll+0x39ec5]  RtlInitializeExceptionChain+0x36
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  sun.misc.Unsafe.getByte(J)B+0
+j  java.nio.DirectByteBuffer.get(I)B+12
+j  com.jniwrapper.g.readByte(I)B+5
+j  com.jniwrapper.WideString.getStrLen(Lcom/jniwrapper/DataBuffer;I)I+31
+j  com.jniwrapper.ZeroTerminatedString.getValue()Ljava/lang/String;+17
+j  com.jniwrapper.Str.getValue()Ljava/lang/String;+4
+j  hook.LastErrorException.retrieveErrorDescription(J)Ljava/lang/String;+98
+j  hook.LastErrorException.<init>(JLjava/lang/String;)V+3
+j  tests.ExceptionTest.lastErrorExceptionThrowing()V+9
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+57
+j  org.junit.runners.model.FrameworkMethod$1.runReflectiveCall()Ljava/lang/Object;+15
+j  org.junit.internal.runners.model.ReflectiveCallable.run()Ljava/lang/Object;+1
+j  org.junit.runners.model.FrameworkMethod.invokeExplosively(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+10
+j  org.junit.internal.runners.statements.InvokeMethod.evaluate()V+12
+j  org.junit.runners.ParentRunner.runLeaf(Lorg/junit/runners/model/Statement;Lorg/junit/runner/Description;Lorg/junit/runner/notification/RunNotifier;)V+17
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Lorg/junit/runners/model/FrameworkMethod;Lorg/junit/runner/notification/RunNotifier;)V+32
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$3.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+40
+j  org.junit.runners.ParentRunner.access$000(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+20
+j  org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+72
+j  org.eclipse.jdt.internal.junit.runner.TestExecution.run([Lorg/eclipse/jdt/internal/junit/runner/ITestReference;)V+17
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests([Ljava/lang/String;Ljava/lang/String;Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+61
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+10
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run()V+70
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main([Ljava/lang/String;)V+14
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x050efc00 JavaThread "com.jniwrapper.NativeResourceCollector" daemon [_thread_blocked, id=112, stack(0x04d20000,0x04d70000)]
+  0x0478c400 JavaThread "ReaderThread" [_thread_in_native, id=1456, stack(0x04da0000,0x04df0000)]
+  0x01e75000 JavaThread "Service Thread" daemon [_thread_blocked, id=628, stack(0x04280000,0x042d0000)]
+  0x01e6b000 JavaThread "C1 CompilerThread0" daemon [_thread_blocked, id=3864, stack(0x04650000,0x046a0000)]
+  0x01e6a000 JavaThread "Attach Listener" daemon [_thread_blocked, id=4740, stack(0x04580000,0x045d0000)]
+  0x01e66c00 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=2388, stack(0x044d0000,0x04520000)]
+  0x01e3e400 JavaThread "Finalizer" daemon [_thread_blocked, id=3420, stack(0x04420000,0x04470000)]
+  0x01e39400 JavaThread "Reference Handler" daemon [_thread_blocked, id=4900, stack(0x04110000,0x04160000)]
+=>0x0031d000 JavaThread "main" [_thread_in_vm, id=4944, stack(0x01f50000,0x01fa0000)]
+
+Other Threads:
+  0x01e36400 VMThread [stack: 0x041d0000,0x04220000] [id=4728]
+  0x046b9000 WatcherThread [stack: 0x048e0000,0x04930000] [id=1696]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ def new generation   total 4928K, used 2183K [0x23ef0000, 0x24440000, 0x29440000)
+  eden space 4416K,  37% used [0x23ef0000, 0x24091dc0, 0x24340000)
+  from space 512K, 100% used [0x243c0000, 0x24440000, 0x24440000)
+  to   space 512K,   0% used [0x24340000, 0x24340000, 0x243c0000)
+ tenured generation   total 10944K, used 673K [0x29440000, 0x29ef0000, 0x33ef0000)
+   the space 10944K,   6% used [0x29440000, 0x294e86e0, 0x294e8800, 0x29ef0000)
+ compacting perm gen  total 12288K, used 2245K [0x33ef0000, 0x34af0000, 0x37ef0000)
+   the space 12288K,  18% used [0x33ef0000, 0x34121768, 0x34121800, 0x34af0000)
+    ro space 10240K,  45% used [0x37ef0000, 0x38371888, 0x38371a00, 0x388f0000)
+    rw space 12288K,  54% used [0x388f0000, 0x38f704f8, 0x38f70600, 0x394f0000)
+
+Code Cache  [0x01fa0000, 0x02058000, 0x03fa0000)
+ total_blobs=337 nmethods=173 adapters=97 free_code_cache=32043Kb largest_free_block=32812800
+
+Dynamic libraries:
+0x00210000 - 0x0023f000 	C:\Program Files (x86)\Java\jdk1.7.0\bin\javaw.exe
+0x77540000 - 0x776c0000 	C:\Windows\SysWOW64\ntdll.dll
+0x724b0000 - 0x724ec000 	C:\Program Files\AVAST Software\Avast\snxhk.dll
+0x74e20000 - 0x74f30000 	C:\Windows\syswow64\KERNEL32.dll
+0x75520000 - 0x75567000 	C:\Windows\syswow64\KERNELBASE.dll
+0x75190000 - 0x75230000 	C:\Windows\syswow64\ADVAPI32.dll
+0x75c40000 - 0x75cec000 	C:\Windows\syswow64\msvcrt.dll
+0x76970000 - 0x76989000 	C:\Windows\SysWOW64\sechost.dll
+0x750a0000 - 0x75190000 	C:\Windows\syswow64\RPCRT4.dll
+0x74c20000 - 0x74c80000 	C:\Windows\syswow64\SspiCli.dll
+0x74c10000 - 0x74c1c000 	C:\Windows\syswow64\CRYPTBASE.dll
+0x74d10000 - 0x74e10000 	C:\Windows\syswow64\USER32.dll
+0x75410000 - 0x754a0000 	C:\Windows\syswow64\GDI32.dll
+0x75710000 - 0x7571a000 	C:\Windows\syswow64\LPK.dll
+0x769c0000 - 0x76a5d000 	C:\Windows\syswow64\USP10.dll
+0x72510000 - 0x726ae000 	C:\Windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7601.17514_none_41e6975e2bd6f2b2\COMCTL32.dll
+0x76bc0000 - 0x76c17000 	C:\Windows\syswow64\SHLWAPI.dll
+0x71ee0000 - 0x71f2c000 	C:\Windows\system32\apphelp.dll
+0x59fe0000 - 0x5a239000 	C:\Windows\AppPatch\AcXtrnal.DLL
+0x75be0000 - 0x75c40000 	C:\Windows\system32\IMM32.DLL
+0x74f40000 - 0x7500c000 	C:\Windows\syswow64\MSCTF.dll
+0x5a710000 - 0x5a7ce000 	C:\Program Files (x86)\Java\jdk1.7.0\jre\bin\msvcr100.dll
+0x59940000 - 0x59c61000 	C:\Program Files (x86)\Java\jdk1.7.0\jre\bin\client\jvm.dll
+0x74400000 - 0x74407000 	C:\Windows\system32\WSOCK32.dll
+0x75230000 - 0x75265000 	C:\Windows\syswow64\WS2_32.dll
+0x77510000 - 0x77516000 	C:\Windows\syswow64\NSI.dll
+0x73400000 - 0x73432000 	C:\Windows\system32\WINMM.dll
+0x74e10000 - 0x74e15000 	C:\Windows\syswow64\PSAPI.DLL
+0x5b730000 - 0x5b73c000 	C:\Program Files (x86)\Java\jdk1.7.0\jre\bin\verify.dll
+0x5b6f0000 - 0x5b710000 	C:\Program Files (x86)\Java\jdk1.7.0\jre\bin\java.dll
+0x5b6d0000 - 0x5b6e3000 	C:\Program Files (x86)\Java\jdk1.7.0\jre\bin\zip.dll
+0x5b520000 - 0x5b534000 	C:\Program Files (x86)\Java\jdk1.7.0\jre\bin\net.dll
+0x72830000 - 0x7286c000 	C:\Windows\system32\mswsock.dll
+0x726b0000 - 0x726b6000 	C:\Windows\System32\wship6.dll
+0x5b740000 - 0x5b74f000 	C:\Program Files (x86)\Java\jdk1.7.0\jre\bin\nio.dll
+0x10000000 - 0x1000c000 	D:\programs\jniwrapper-3.8.4-windows-32_64-bit\bin\jniwrap.dll
+
+VM Arguments:
+jvm_args: -Dfile.encoding=Cp1251 
+java_command: org.eclipse.jdt.internal.junit.runner.RemoteTestRunner -version 3 -port 50550 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -test tests.ExceptionTest:lastErrorExceptionThrowing
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=c:\Program Files\Java\jdk1.7.0_09
+PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;D:\programs\apache-maven-3.0.4\bin;D:\programs\jniwrapper-3.8.4-windows-32_64-bit\bin;c:\Program Files\Java\jdk1.7.0_09\bin;C:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\;C:\Program Files\Microsoft SQL Server\100\Tools\Binn\;C:\Program Files\Microsoft SQL Server\100\DTS\Binn\;C:\MinGW\bin;C:\MinGW\mingw\bin
+USERNAME=anna.dolbina
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 23 Stepping 6, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 , 64 bit Build 7601 Service Pack 1
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 6 model 23 stepping 6, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1
+
+Memory: 4k page, physical 4193400k(1917996k free), swap 8384948k(5789076k free)
+
+vm_info: Java HotSpot(TM) Client VM (21.0-b17) for windows-x86 JRE (1.7.0-b147), built on Jun 27 2011 02:25:52 by "java_re" with unknown MS VC++:1600
+
+time: Wed Jan 16 13:41:14 2013
+elapsed time: 0 seconds
+

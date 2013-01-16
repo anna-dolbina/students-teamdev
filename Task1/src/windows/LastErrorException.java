@@ -30,7 +30,16 @@ public class LastErrorException extends RuntimeException {
 			String sourceMessage) {
 		this(errorCode,retrieveErrorDescription(errorCode),sourceMessage);
 	}
-
+	/**
+	 * Creates and initializes the instance of LastErrorException, containing
+	 * information about the system error that has occurred.
+	 * 
+	 * @param errorCode
+	 *            the code of the system error
+	 */
+	public LastErrorException(int errorCode){
+		this(errorCode,retrieveErrorDescription(errorCode),"");
+	}
 	private static native String retrieveErrorDescription(int errorCode);
 
 	/*
@@ -44,7 +53,7 @@ public class LastErrorException extends RuntimeException {
 	 */
 	private LastErrorException(int errorCode, String errorDescription,
 			String sourceMessage) {
-		super(sourceMessage + ". System error code: " + errorCode
+		super(sourceMessage + " System error code: " + errorCode
 				+ " Description: " + errorDescription);
 
 		this.errorCode = errorCode;

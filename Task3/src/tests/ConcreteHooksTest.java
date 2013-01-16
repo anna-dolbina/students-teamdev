@@ -32,9 +32,13 @@ public class ConcreteHooksTest {
 	/**
 	 * Tests a hook catching minimizing and restoring events.
 	 */
-	//TODO: make this test automatic
 	@Test
 	public void minimizeAndRestoreWindowHook() {
+		JFrame frame = new JFrame(WINDOW_TITLE);
+		frame.setBounds(TOP_LEFT_CORNER_X, TOP_LEFT_CORNER_Y, WINDOW_WIDTH,
+				WINDOW_HEIGHT);
+		frame.setVisible(true);
+		
 		Hook hook = new MinimizeAndRestoreWindowHook();
 		hook.addListener(new HookListener() {
 
@@ -62,9 +66,12 @@ public class ConcreteHooksTest {
 		});
 		try {
 			hook.install();
-			System.out.println("Press 'Enter' to terminate.");
-			System.in.read();
-			System.in.skip(4);
+			for (int i = 0; i < 10; i++) {
+				frame.setState(Frame.ICONIFIED);
+				Thread.sleep(3000);
+				frame.setState(Frame.NORMAL);
+				Thread.sleep(3000);
+			}
 			hook.uninstall();
 		}
 
@@ -99,12 +106,13 @@ public class ConcreteHooksTest {
 			@Override
 			public void onHookEvent(HookEventObject e) {
 				Calendar date = new GregorianCalendar();
-				date.setTime(e.getEventDate());
+				date.setTimeInMillis(System.currentTimeMillis()-e.getEventTime());
 				logger.info("Listener2: Active window changed to "
 						+ e.getSourceWindowHandle() + " Event time: "
 						+ date.get(Calendar.HOUR_OF_DAY) + ":"
 						+ date.get(Calendar.MINUTE) + ":"
-						+ date.get(Calendar.MILLISECOND));
+						+ date.get(Calendar.MILLISECOND)+
+						"Time in ms:"+e.getEventTime());
 			}
 
 		});

@@ -87,7 +87,9 @@ public abstract class AbstractHook implements Hook {
 		if (listeners.contains(hookListener))
 			throw new IllegalArgumentException(
 					"The hook listener is already added");
-		listeners.add(hookListener);
+		synchronized (listeners) {
+			listeners.add(hookListener);
+		}
 
 	}
 
@@ -101,7 +103,9 @@ public abstract class AbstractHook implements Hook {
 		if (!listeners.contains(hookListener))
 			throw new IllegalArgumentException(
 					"Cannot remove the hook listener: it wasn't added to the hook");
-		listeners.remove(hookListener);
+		synchronized (listeners) {
+			listeners.remove(hookListener);
+		}
 
 	}
 

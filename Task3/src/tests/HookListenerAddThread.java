@@ -43,7 +43,7 @@ public class HookListenerAddThread extends Thread {
 
 			});
 			try {
-				Thread.sleep((long) (Math.random() * 2000));
+				Thread.sleep((long) (Math.random() * 10));
 			} catch (InterruptedException e) {
 				break;
 			}

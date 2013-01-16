@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.jniwrapper.Bool;
 import com.jniwrapper.Function;
 import com.jniwrapper.Int;
-import com.jniwrapper.IntegerParameter;
 import com.jniwrapper.Library;
 import com.jniwrapper.Parameter;
 import com.jniwrapper.Pointer;
@@ -22,7 +21,6 @@ import com.jniwrapper.UInt32;
 public final class HookEventLoop extends Thread {
 	private static final int ERROR_SUCCESS = 0;
 	private static Logger logger;
-	private static final int PM_REMOVE = 1;
 	private static final int NO_CALLBACK_MODULE_NEEDED = ERROR_SUCCESS;
 	private static final long EMPTY_MESSAGE_QUEUE = 0;
 	private static final long MESSAGE_TYPE = 0x0012;
@@ -89,40 +87,47 @@ public final class HookEventLoop extends Thread {
 	public void run() {
 		long errorCode = ERROR_SUCCESS;
 		try {
-			currentThreadId=getCurrentThreadId();
+			currentThreadId = getCurrentThreadId();
 			installHook();
 			logger.info("hook:" + hookHandle);
 			Msg msg = new Msg();
 			Int messageQueueStatus = new Int(0);
-			Parameter[] params = { new Pointer(msg), new Pointer.Void(), new Int(0), new Int(0) };
+			Parameter[] params = { new Pointer(msg), new Pointer.Void(),
+					new Int(0), new Int(0) };
 			errorCode = getMessage.invoke(messageQueueStatus, params);
 			if (errorCode != ERROR_SUCCESS) {
 				removeHook();
 				throw new LastErrorException(errorCode,
 						"An error occurred when trying to get a message from thread message queue");
 			}
-			while (isMessageThreadAlive()
-					&& isMessageQueueEmpty(messageQueueStatus)) {
+			while (isThreadAlive() && isMessageQueueEmpty(messageQueueStatus)) {
 				errorCode = getMessage.invoke(messageQueueStatus, params);
 				if (errorCode != ERROR_SUCCESS) {
 					removeHook();
 					throw new LastErrorException(errorCode,
 							"An error occurred when trying to get a message from thread message queue");
 				}
-				
+
 			}
 			removeHook();
 		} catch (RuntimeException e) {
 			e.printStackTrace();
-		} 
+		}
 
 	}
 
+	/*
+	 * Checks if the message queue of the current thread is empty
+	 */
 	private boolean isMessageQueueEmpty(Int messageQueueStatus) {
-		return ((messageQueueStatus.getValue() == EMPTY_MESSAGE_QUEUE)||(messageQueueStatus.getValue() ==MESSAGE_QUEUE_ERROR));
+		return ((messageQueueStatus.getValue() == EMPTY_MESSAGE_QUEUE) || (messageQueueStatus
+				.getValue() == MESSAGE_QUEUE_ERROR));
 	}
 
-	private boolean isMessageThreadAlive() {
+	/*
+	 * Checks if the thread is alive
+	 */
+	private boolean isThreadAlive() {
 		return !isInterrupted();
 	}
 
@@ -155,6 +160,9 @@ public final class HookEventLoop extends Thread {
 		hookCallback.dispose();
 	}
 
+	/*
+	 * Performs the GetCurrentThreadId call
+	 */
 	private long getCurrentThreadId() {
 		UInt32 currentThreadId = new UInt32(0);
 		long errorCode = getCurrentThreadId.invoke(currentThreadId);
@@ -166,6 +174,10 @@ public final class HookEventLoop extends Thread {
 		return currentThreadId.getValue();
 	}
 
+	/*
+	 * Performs sending message to a thread with specified id (PostThreadMessge
+	 * call)
+	 */
 	private void postThreadMessage(long threadId) {
 		long errorCode = postThreadMessage.invoke(null, new UInt32(threadId),
 				new UInt(MESSAGE_TYPE), new Int(PARAMETER_NOT_USED), new Int(
@@ -177,6 +189,7 @@ public final class HookEventLoop extends Thread {
 		logger.info("A message was sent to a thread " + threadId);
 	}
 
+	@Override
 	public void interrupt() {
 		super.interrupt();
 		postThreadMessage(currentThreadId);

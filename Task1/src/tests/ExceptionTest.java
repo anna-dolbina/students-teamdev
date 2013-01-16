@@ -2,7 +2,7 @@ package tests;
 
 
 
-import hook.LastErrorException;
+import windows.LastErrorException;
 
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import org.junit.Test;
 public class ExceptionTest {
 
 	@Test
-	public void lastErrorExceptionThrowing() {
+	public void lastExceptionThrowing() {
 		try{
 			throw new LastErrorException(5, "Test");
 		}catch(LastErrorException e){

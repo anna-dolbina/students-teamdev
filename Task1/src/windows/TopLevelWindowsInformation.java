@@ -113,15 +113,14 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 */
 	
 	private void callback(int windowHandle) {
-		WindowInformation windowInformation = null;
 		try {
-			windowInformation =createWindowInformation(windowHandle); 
+			WindowInformation windowInformation =createWindowInformation(windowHandle); 
+			windowsInformation.add(windowInformation);
 		} catch (IllegalArgumentException e) {
 			logger.error("Cannot retrieve window information: "
 					+ e.getMessage() + " Window handle: " + windowHandle);
-		}
-		windowsInformation.add(windowInformation);
-		
+			throw new RuntimeException(e);
+		}	
 	}
 
 }

@@ -43,6 +43,7 @@ public class TopLevelWindowsInformationTest {
 			Iterator<WindowInformation> it = visibleWindows.iterator();
 			while (it.hasNext()) {
 				window = it.next();
+				
 				if (checkWindowTitle(window) && checkTopLeftCorner(window)) {
 					status = true;
 				}
@@ -54,18 +55,25 @@ public class TopLevelWindowsInformationTest {
 			fail("A window created from test was not found on the screen");
 	}
 
-	/**
+	/*
+	 * Checks if the top left corner coordinates of a window are equal to
+	 * TOP_LEFT_CORNER_X and TOP_LEFT_CORNER_Y
+	 * 
 	 * @param window
-	 * @return
+	 *            the window to check
+	 * @return true if coordinates match; false otherwise
 	 */
 	private boolean checkTopLeftCorner(WindowInformation window) {
 		return (window.getTopLeftCorner().x == TOP_LEFT_CORNER_X)
 				&& (window.getTopLeftCorner().y == TOP_LEFT_CORNER_Y);
 	}
 
-	/**
+	/*
+	 * Checks if a title of a window matches WINDOW_TITLE
+	 * 
 	 * @param window
-	 * @return
+	 *            the window to check
+	 * @return true if title matches; false otherwise
 	 */
 	private boolean checkWindowTitle(WindowInformation window) {
 		return window.getWindowTitle().matches(WINDOW_TITLE);

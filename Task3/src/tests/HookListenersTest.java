@@ -95,7 +95,7 @@ public class HookListenersTest {
 		t1.start();
 		t2.start();
 		try {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 3; i++) {
 				frame.setState(Frame.ICONIFIED);
 				Thread.sleep(3000);
 				frame.setState(Frame.NORMAL);

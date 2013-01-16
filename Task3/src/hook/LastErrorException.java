@@ -5,10 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import com.jniwrapper.DefaultLibraryLoader;
 import com.jniwrapper.Function;
+import com.jniwrapper.Library;
 import com.jniwrapper.Parameter;
 import com.jniwrapper.Pointer;
+import com.jniwrapper.Str;
 import com.jniwrapper.UInt32;
-import com.jniwrapper.WideString;
 
 /**
  * Describes the last system error which has occurred.
@@ -21,15 +22,14 @@ public class LastErrorException extends RuntimeException {
 	private final long errorCode;
 	private final String errorDescription;
 	private final String sourceMessage;
-
 	private static final long serialVersionUID = 1L;
-	private static final long FORMAT_MESSAGE_FROM_SYSTEM = 0x00001000;
-	private static final long FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x00000100;
-	private static final long LANG_NEUTRAL = 0x00;
+	private static final int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
+    private static final long LANG_NEUTRAL = 0x00;
 	private static final long SUBLANG_DEFAULT = 0x01;
 
 	static {
 		DefaultLibraryLoader.getInstance().addPath("lib");
+		new Library("kernel32");
 		logger = LoggerFactory.getLogger(LastErrorException.class);
 	}
 
@@ -47,6 +47,18 @@ public class LastErrorException extends RuntimeException {
 	public LastErrorException(long errorCode, String sourceMessage) {
 		this(errorCode, retrieveErrorDescription(errorCode), sourceMessage);
 	}
+
+	/**
+	 * Creates and initializes the instance of LastErrorException, containing
+	 * information about the system error that has occurred.
+	 * 
+	 * @param errorCode
+	 *            the code of the system error
+	 */
+	public LastErrorException(int errorCode) {
+		this(errorCode, retrieveErrorDescription(errorCode), "");
+	}
+
 	/*
 	 * Retrieves a description string for the system error code
 	 * 
@@ -55,32 +67,56 @@ public class LastErrorException extends RuntimeException {
 	 * @return the string description for this error code
 	 */
 	private static String retrieveErrorDescription(long errorCode) {
-		UInt32 bufferSize=new UInt32(0);
-		UInt32 errorCodeParameter=new UInt32(errorCode);
-		Pointer description=new Pointer(WideString.class);
-		Parameter[] formatParameters=new Parameter[]{
-				new UInt32(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-		        FORMAT_MESSAGE_FROM_SYSTEM),
-		        new Pointer.Void(0),
-		        errorCodeParameter,
-		        new UInt32(MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT)),
-		        new Pointer(description),
-		        new UInt32(0),new Pointer.Void(0)
-		};
-		long error=Function.call("kernel32","FormatMessageW", bufferSize, formatParameters);
-		if((error!=0)||(bufferSize.getValue()==0)){
-			return "Cannot retrieve description for error code "+errorCode;
+		UInt32 descriptionLength = new UInt32(256);
+		UInt32 errorCodeParameter = new UInt32(errorCode);
+		Str description = new Str();
+		
+
+		long error = formatMessage(descriptionLength, errorCodeParameter,
+				description);
+		if ((error != 0) || (descriptionLength.getValue() == 0)) {
+			logger.error("FormatMessage error: error code "+error);
+			return "Cannot retrieve description for error code " + errorCode;
 		}
-		String result=description.getReferencedObject().toString();
-		error=Function.call("kernel32","LocalFree", description, description);
-		if((error!=0)||(!description.isNull())){
-			logger.error("An error with code "+error+" occured when freeing allocated buffer");
-		}
+
+		String result = description.getValue().trim();
 		return result;
 	}
 
-	private static long MAKELANGID(long lang,
-			long sublang) {
+	/*
+	 * Performs FormatMessageW call
+	 * 
+	 * @param bufferSize The description string length to initialize. Will be
+	 * initialized after call
+	 * 
+	 * @param errorCode The error code
+	 * 
+	 * @param description a pointer to the description string. Will be
+	 * initialized after call
+	 * 
+	 * @return 0 if succeeded; error code if failed
+	 */
+	private static long formatMessage(UInt32 descriptionLength,
+			UInt32 errorCode, Str description) {
+		Pointer p=new Pointer(description);
+		Parameter[] formatParameters = new Parameter[] {
+				new UInt32(FORMAT_MESSAGE_FROM_SYSTEM), 
+				new Pointer.Void(),
+				errorCode,
+				new UInt32(MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT)),
+				p, 
+				descriptionLength, 
+				new Pointer.Void() };
+
+		long error = Function.call("kernel32", "FormatMessageW",
+				descriptionLength, formatParameters);
+		return error;
+	}
+
+	/*
+	 * An implementation of MAKELANGID macro
+	 */
+	private static long MAKELANGID(long lang, long sublang) {
 		return ((((sublang)) << 10) | (lang));
 	}
 
@@ -95,7 +131,7 @@ public class LastErrorException extends RuntimeException {
 	 */
 	private LastErrorException(long errorCode, String errorDescription,
 			String sourceMessage) {
-		super(sourceMessage + ". System error code: " + errorCode
+		super(sourceMessage + " System error code: " + errorCode
 				+ " Description: " + errorDescription);
 
 		this.errorCode = errorCode;

@@ -1,7 +1,7 @@
 package windows;
 
 /**
- * Interface for a class storing information about windows.
+ * Interface for a for class representing windows information.
  * 
  * @author anna.dolbina
  * 
@@ -9,6 +9,8 @@ package windows;
 public interface WindowsInformation {
 	/**
 	 * Refreshes information about windows.
+	 * 
+	 * @return refresh status: succeeded or failed.
 	 */
 	void refresh();
 
@@ -20,7 +22,7 @@ public interface WindowsInformation {
 	int size();
 
 	/**
-	 * Returns the window information corresponding to this index.
+	 * Returns information about the window corresponding to this index.
 	 * 
 	 * @param index
 	 * @return The window information corresponding to this index.

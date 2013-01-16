@@ -2,6 +2,8 @@ package hook;
 
 public class MinimizeAndRestoreWindowHook extends AbstractHook {
 
+	private static final int NO_FLAGS = 0;
+
 	/**
 	 * A window object is about to be restored. This event is sent by the
 	 * system, never by servers.
@@ -17,6 +19,6 @@ public class MinimizeAndRestoreWindowHook extends AbstractHook {
 	public MinimizeAndRestoreWindowHook() {
 		super(EVENT_SYSTEM_MINIMIZESTART, EVENT_SYSTEM_MINIMIZEEND,
 				Hook.OBSERVE_ALL_PROCESSES, Hook.OBSERVE_ALL_THREADS,
-				Hook.WINEVENT_SKIPOWNPROCESS);
+				NO_FLAGS);
 	}
 }
