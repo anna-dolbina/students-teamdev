@@ -69,39 +69,6 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 * something went wrong.
 	 */
 	private native int init();
-
-	/*
-	 * Function checks visibility of a window described by the window handle.
-	 * Exception is thrown if the passed handle doesn't correspond to an
-	 * existing window.
-	 */
-	private native boolean isWindowVisible(int windowHandle)
-			throws IllegalArgumentException;
-
-	/*
-	 * Function returns the title of a window described by the window handle.
-	 * Exception is thrown if the passed handle doesn't correspond to an
-	 * existing window.
-	 */
-	private native String getWindowTitle(int windowHandle)
-			throws IllegalArgumentException;
-
-	/*
-	 * Function returns the class name of a window described by the window
-	 * handle. Exception is thrown if the passed handle doesn't correspond to an
-	 * existing window.
-	 */
-	private native String getWindowClassName(int windowHandle)
-			throws IllegalArgumentException;
-
-	/*
-	 * Function returns the top left corner of a window described by the window
-	 * handle. Exception is thrown if the passed handle doesn't correspond to an
-	 * existing window.
-	 */
-	private native Point getTopLeftCorner(int windowHandle)
-			throws IllegalArgumentException;
-	
 	/*
 	 * Function creates a WindowInformation class corresponding to passed window handle.
 	 * IllegalArgumentException can be thrown if passed handle is not valid.

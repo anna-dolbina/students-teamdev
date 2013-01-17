@@ -1,5 +1,8 @@
 package hook;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jniwrapper.Callback;
 import com.jniwrapper.Int;
 import com.jniwrapper.LongInt;
@@ -18,20 +21,17 @@ public final class HookCallback extends Callback {
 	private UInt32 eventCode = new UInt32();
 
 	private Int sourceWindowHandle = new Int();
-	/*
-	 * Object id. Identifier of the object associated with the event. This is
-	 * one of the object identifiers or a custom object ID.
-	 */
 	private LongInt objectId = new LongInt();
-	/*
-	 * Child id. Value which identifies whether the event was triggered by an
-	 * object or a child element of the object.
-	 */
+	
 	private LongInt childId = new LongInt();
 	private UInt32 eventThreadId = new UInt32();
 	private UInt32 eventTime = new UInt32();
+	private final static Logger logger;
 	private final AbstractHook hook;
-
+	
+	static{
+		logger=LoggerFactory.getLogger(HookCallback.class);
+	}
 	/**
 	 * Constructs and initializes a callback instance.
 	 * 

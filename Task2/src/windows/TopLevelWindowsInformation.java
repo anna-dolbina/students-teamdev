@@ -69,6 +69,13 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 
 	private final List<WindowInformation> windowsInformation = new ArrayList<WindowInformation>();
 	private final Library user32;
+	private final Function isWindow;
+	private final Function enumWindows;
+	private final Function isWindowVisible;
+	private final Function getWindowTextLength;
+	private final Function getWindowText;
+	private final Function getClassName;
+	private final Function getWindowRect;
 	static {
 		DefaultLibraryLoader.getInstance().addPath("lib");
 	}
@@ -78,11 +85,20 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 */
 	public TopLevelWindowsInformation() {
 		user32 = new Library("user32");
+		isWindow = user32.getFunction("IsWindow");
+		enumWindows = user32.getFunction("EnumWindows");
+		isWindowVisible = user32.getFunction("IsWindowVisible");
+		getWindowTextLength = user32.getFunction("GetWindowTextLengthW");
+		getWindowText = user32.getFunction("GetWindowTextW");
+		getClassName = user32.getFunction("GetClassNameW");
+		getWindowRect = user32.getFunction("GetWindowRect");
+
 		long errorCode = init();
 		if (errorCode != ERROR_SUCCESS) {
 			throw new LastErrorException(errorCode,
 					"Error has occurred when forming a list");
 		}
+
 	}
 
 	@Override
@@ -108,11 +124,10 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	/*
 	 * Fills the list with information about windows.
 	 * 
-	 * @return true if all topmost windows were processed; false if something
+	 * @return 0 if all topmost windows were processed; error code if something
 	 * went wrong.
 	 */
 	private long init() {
-		Function enumWindows = user32.getFunction("EnumWindows");
 		EnumWindowsCallback callback = new EnumWindowsCallback();
 		long errorCode = enumWindows.invoke(null, callback, new Int(0));
 		if (errorCode == ERROR_SUCCESS) {
@@ -121,7 +136,7 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 				fillInformation(handles);
 			} catch (RuntimeException e) {
 				logger.error("Init exception: " + e.getMessage());
-				errorCode=ERROR_FAIL;
+				errorCode = ERROR_FAIL;
 			}
 		}
 		callback.dispose();
@@ -161,12 +176,14 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 * 
 	 * @param windowHandle the window handle to check
 	 * 
-	 * @return true if windowHandle is a valid window handle ; false otherwise
+	 * @return true if windowHandle is a valid window handle; false otherwise
 	 */
 	private boolean isWindow(int windowHandle) {
-		Function isWindow = user32.getFunction("IsWindow");
+		if (windowHandle <= 0)
+			return false;
 		Bool res = new Bool();
 		long errorCode = isWindow.invoke(res, new Int(windowHandle));
+		
 		if (errorCode != ERROR_SUCCESS) {
 			throw new LastErrorException(errorCode,
 					"Error has occurred when validating a handle");
@@ -182,12 +199,10 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 * @return true if this is a visible window; false otherwise.
 	 */
 	private boolean isWindowVisible(int windowHandle) {
-		if (!isWindow(windowHandle))
-			throw new IllegalArgumentException(
-					"Passed argument is not a valid window handle.");
-		Function isVisible = user32.getFunction("IsWindowVisible");
+		checkWindowHandle(windowHandle);
 		Bool res = new Bool();
-		long errorCode = isVisible.invoke(res, new Int(windowHandle));
+		long errorCode = isWindowVisible.invoke(res, new Int(windowHandle));
+		
 		if (errorCode != ERROR_SUCCESS) {
 			throw new LastErrorException(errorCode,
 					"Error has occurred when checking visibility of "
@@ -205,23 +220,13 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 * otherwise.
 	 */
 	private String getWindowTitle(int windowHandle) {
-		if (!isWindow(windowHandle))
-			throw new IllegalArgumentException(
-					"Passed argument is not a valid window handle.");
-		Int windowTitleLength = new Int(0);
-		Function textLength = user32.getFunction("GetWindowTextLengthW");
-		long errorCode = textLength.invoke(windowTitleLength, new Int(
-				windowHandle));
-		if (errorCode != ERROR_SUCCESS) {
-			throw new LastErrorException(errorCode,
-					"Error has occurred when getting a window title length of "
-							+ windowHandle);
-		}
-		windowTitleLength = new Int((int) windowTitleLength.getValue() + 1);
+		checkWindowHandle(windowHandle);
+		Int windowTitleLength = new Int(getWindowTitleLength(windowHandle) + 1);
+		long errorCode;
 		WideString result = new WideString(
 				(int) windowTitleLength.getValue() + 1);
-		Function getText = user32.getFunction("GetWindowTextW");
-		errorCode = getText.invoke(null, new Int(windowHandle), result,
+		
+		errorCode = getWindowText.invoke(null, new Int(windowHandle), result,
 				windowTitleLength);
 		if (errorCode != ERROR_SUCCESS) {
 			throw new LastErrorException(errorCode,
@@ -233,6 +238,26 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	}
 
 	/*
+	 * Retrieves the length of window title string
+	 * 
+	 * @param windowHandle the handle to the window
+	 * 
+	 * @return retrieved length of window title string
+	 */
+	private long getWindowTitleLength(int windowHandle) {
+		Int windowTitleLength = new Int(0);
+		long errorCode = getWindowTextLength.invoke(windowTitleLength, new Int(
+				windowHandle));
+		
+		if (errorCode != ERROR_SUCCESS) {
+			throw new LastErrorException(errorCode,
+					"Error has occurred when getting a window title length of "
+							+ windowHandle);
+		}
+		return windowTitleLength.getValue();
+	}
+
+	/*
 	 * Returns the class name of the window described by handle.
 	 * 
 	 * @param windowHandle the window handle.
@@ -241,16 +266,13 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 * otherwise.
 	 */
 	private String getWindowClassName(int windowHandle) {
-		if (!isWindow(windowHandle))
-			throw new IllegalArgumentException(
-					"Passed argument is not a valid window handle.");
-
+		checkWindowHandle(windowHandle);
 		Int classNameLength = new Int(MAX_CLASSNAME_LENGTH);
-		WideString result = new WideString(MAX_CLASSNAME_LENGTH + 1);
-		Function getText = user32.getFunction("GetClassNameW");
+		WideString result = new WideString(MAX_CLASSNAME_LENGTH);
 		Int returnValue = new Int();
-		long errorCode = getText.invoke(returnValue, new Int(windowHandle),
-				result, classNameLength);
+		
+		long errorCode = getClassName.invoke(returnValue,
+				new Int(windowHandle), result, classNameLength);
 		if ((errorCode != ERROR_SUCCESS) || (returnValue.getValue() == 0)) {
 			throw new LastErrorException(errorCode,
 					"Failed to get class name of " + windowHandle);
@@ -267,12 +289,9 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 	 * window handle is not valid.
 	 */
 	private Point getTopLeftCorner(int windowHandle) {
-		if (!isWindow(windowHandle))
-			throw new IllegalArgumentException(
-					"Passed argument is not a valid window handle.");
+		checkWindowHandle(windowHandle);
 		Rect rect = new Rect();
-		Function getRect = user32.getFunction("GetWindowRect");
-		long errorCode = getRect.invoke(null, new Int(windowHandle),
+		long errorCode = getWindowRect.invoke(null, new Int(windowHandle),
 				new Pointer(rect));
 		if (errorCode != ERROR_SUCCESS) {
 			throw new LastErrorException(errorCode,
@@ -281,6 +300,18 @@ public class TopLevelWindowsInformation implements WindowsInformation {
 		}
 		return new Point((int) rect.getLeft(), (int) rect.getTop());
 
+	}
+
+	/*
+	 * Performs window handle check
+	 * 
+	 * @param windowHandle
+	 *            the window handle to check
+	 */
+	private void checkWindowHandle(int windowHandle) {
+		if (!isWindow(windowHandle))
+			throw new IllegalArgumentException(
+					"Passed argument is not a valid window handle.");
 	}
 
 }

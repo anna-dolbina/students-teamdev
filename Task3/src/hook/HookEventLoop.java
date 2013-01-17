@@ -90,6 +90,9 @@ public final class HookEventLoop extends Thread {
 			currentThreadId = getCurrentThreadId();
 			installHook();
 			logger.info("hook:" + hookHandle);
+			synchronized(hookCallback){
+				hookCallback.notifyAll();
+			}
 			Msg msg = new Msg();
 			Int messageQueueStatus = new Int(0);
 			Parameter[] params = { new Pointer(msg), new Pointer.Void(),

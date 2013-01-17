@@ -15,7 +15,9 @@ public class MinimizeAndRestoreWindowHook extends AbstractHook {
 	 * system, never by servers.
 	 */
 	public static final long EVENT_SYSTEM_MINIMIZESTART = 0x0016;
-
+	/**
+	 * Constructs and initializes the instance of MinimizeAndRestoreWindowHook
+	 */
 	public MinimizeAndRestoreWindowHook() {
 		super(EVENT_SYSTEM_MINIMIZESTART, EVENT_SYSTEM_MINIMIZEEND,
 				Hook.OBSERVE_ALL_PROCESSES, Hook.OBSERVE_ALL_THREADS,

@@ -18,6 +18,7 @@ import com.jniwrapper.UInt32;
  * 
  */
 public class LastErrorException extends RuntimeException {
+	private static final int STR_DEFAULT_MAX_LENGTH = 256;
 	private static Logger logger;
 	private final long errorCode;
 	private final String errorDescription;
@@ -45,7 +46,7 @@ public class LastErrorException extends RuntimeException {
 	 *         code.
 	 */
 	public LastErrorException(long errorCode, String sourceMessage) {
-		this(errorCode, retrieveErrorDescription(errorCode), sourceMessage);
+		this(errorCode, retrieveErrorDescription(errorCode).trim(), sourceMessage);
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class LastErrorException extends RuntimeException {
 	 *            the code of the system error
 	 */
 	public LastErrorException(int errorCode) {
-		this(errorCode, retrieveErrorDescription(errorCode), "");
+		this(errorCode, retrieveErrorDescription(errorCode).trim(), "");
 	}
 
 	/*
@@ -67,19 +68,19 @@ public class LastErrorException extends RuntimeException {
 	 * @return the string description for this error code
 	 */
 	private static String retrieveErrorDescription(long errorCode) {
-		UInt32 descriptionLength = new UInt32(256);
+		UInt32 descriptionLength = new UInt32(STR_DEFAULT_MAX_LENGTH);
 		UInt32 errorCodeParameter = new UInt32(errorCode);
 		Str description = new Str();
-		
+		String result;
 
 		long error = formatMessage(descriptionLength, errorCodeParameter,
 				description);
 		if ((error != 0) || (descriptionLength.getValue() == 0)) {
 			logger.error("FormatMessage error: error code "+error);
-			return "Cannot retrieve description for error code " + errorCode;
+			result = "Cannot retrieve description for error code " + errorCode;
+		}else{
+			result = description.getValue().trim();
 		}
-
-		String result = description.getValue().trim();
 		return result;
 	}
 

@@ -28,7 +28,7 @@ public class LastErrorException extends RuntimeException {
 	 */
 	public LastErrorException(int errorCode,
 			String sourceMessage) {
-		this(errorCode,retrieveErrorDescription(errorCode),sourceMessage);
+		this(errorCode,retrieveErrorDescription(errorCode).trim(),sourceMessage);
 	}
 	/**
 	 * Creates and initializes the instance of LastErrorException, containing
@@ -38,7 +38,7 @@ public class LastErrorException extends RuntimeException {
 	 *            the code of the system error
 	 */
 	public LastErrorException(int errorCode){
-		this(errorCode,retrieveErrorDescription(errorCode),"");
+		this(errorCode,retrieveErrorDescription(errorCode).trim(),"");
 	}
 	private static native String retrieveErrorDescription(int errorCode);
 

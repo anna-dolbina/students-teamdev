@@ -19,38 +19,6 @@ JNIEXPORT jint JNICALL Java_windows_TopLevelWindowsInformation_init
 
 /*
  * Class:     windows_TopLevelWindowsInformation
- * Method:    isWindowVisible
- * Signature: (I)Z
- */
-JNIEXPORT jboolean JNICALL Java_windows_TopLevelWindowsInformation_isWindowVisible
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     windows_TopLevelWindowsInformation
- * Method:    getWindowTitle
- * Signature: (I)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_windows_TopLevelWindowsInformation_getWindowTitle
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     windows_TopLevelWindowsInformation
- * Method:    getWindowClassName
- * Signature: (I)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_windows_TopLevelWindowsInformation_getWindowClassName
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     windows_TopLevelWindowsInformation
- * Method:    getTopLeftCorner
- * Signature: (I)Ljava/awt/Point;
- */
-JNIEXPORT jobject JNICALL Java_windows_TopLevelWindowsInformation_getTopLeftCorner
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     windows_TopLevelWindowsInformation
  * Method:    createWindowInformation
  * Signature: (I)Lwindows/WindowInformation;
  */

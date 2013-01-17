@@ -22,7 +22,7 @@ public abstract class AbstractHook implements Hook {
 
 	private final long minEventId, maxEventId, observedProcessId,
 			observedThreadId, hookFlags;
-	static{
+	static {
 		logger = LoggerFactory.getLogger(AbstractHook.class);
 	}
 
@@ -60,13 +60,22 @@ public abstract class AbstractHook implements Hook {
 
 	@Override
 	public void install() {
+		HookCallback callback = new HookCallback(this);
 		if ((eventLoop != null) && (eventLoop.isAlive()))
 			throw new RuntimeException("The hook is already installed");
 
-		eventLoop = new HookEventLoop(minEventId, maxEventId, new HookCallback(
-				this), observedProcessId, observedThreadId, hookFlags);
+		eventLoop = new HookEventLoop(minEventId, maxEventId, callback,
+				observedProcessId, observedThreadId, hookFlags);
 
 		eventLoop.start();
+		synchronized (callback) {
+			try {
+				callback.wait();
+			} catch (InterruptedException e) {
+				logger.error("Install completion was interrupted");
+			}
+		}
+
 	}
 
 	@Override
@@ -77,7 +86,8 @@ public abstract class AbstractHook implements Hook {
 		try {
 			eventLoop.join();
 		} catch (InterruptedException e) {
-			logger.error("An exception occurred when trying to join hook loop:"+e.getMessage());
+			logger.error("An exception occurred when trying to join hook loop:"
+					+ e.getMessage());
 		}
 
 	}
@@ -129,7 +139,8 @@ public abstract class AbstractHook implements Hook {
 			try {
 				listener.onHookEvent(e);
 			} catch (Exception ex) {
-				logger.error("An exception occured in hook listener: "+ex.getMessage());
+				logger.error("An exception occured in hook listener: "
+						+ ex.getMessage());
 			}
 		}
 

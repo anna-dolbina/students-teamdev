@@ -3,7 +3,7 @@ package hook;
 import java.util.EventListener;
 
 /**
- * Interface describes functionality for a hook listener.
+ * Interface for a hook listener.
  * 
  * @author anna.dolbina
  * 

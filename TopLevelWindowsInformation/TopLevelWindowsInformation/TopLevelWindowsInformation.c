@@ -45,7 +45,7 @@ JNIEXPORT jint JNICALL Java_windows_TopLevelWindowsInformation_init
 }
 
 
-JNIEXPORT jboolean JNICALL Java_windows_TopLevelWindowsInformation_isWindowVisible
+jboolean isWindowVisible
 	(JNIEnv *env, jobject obj, jint handle)
 {
 	HWND hWnd=(HWND)((int)handle);
@@ -63,7 +63,7 @@ JNIEXPORT jboolean JNICALL Java_windows_TopLevelWindowsInformation_isWindowVisib
 }
 
 
-JNIEXPORT jstring JNICALL Java_windows_TopLevelWindowsInformation_getWindowTitle
+jstring JNICALL getWindowTitle
 	(JNIEnv *env, jobject obj, jint handle)
 {	
 	wchar_t* res;
@@ -90,7 +90,7 @@ JNIEXPORT jstring JNICALL Java_windows_TopLevelWindowsInformation_getWindowTitle
 }
 
 
-JNIEXPORT jstring JNICALL Java_windows_TopLevelWindowsInformation_getWindowClassName
+jstring JNICALL getWindowClassName
 	(JNIEnv *env, jobject obj, jint handle)
 {
 	char* res;
@@ -110,7 +110,7 @@ JNIEXPORT jstring JNICALL Java_windows_TopLevelWindowsInformation_getWindowClass
 
 }
 
-JNIEXPORT jobject JNICALL Java_windows_TopLevelWindowsInformation_getTopLeftCorner
+jobject JNICALL getTopLeftCorner
 	(JNIEnv * env, jobject obj, jint handle){
 
 		RECT rect;
@@ -135,15 +135,17 @@ JNIEXPORT jobject JNICALL Java_windows_TopLevelWindowsInformation_createWindowIn
 	  jclass cls;
 	  jobject info;
 	  jmethodID constructor;
+	  HWND hWnd=(HWND)((int)windowHandle);
 
 	  cls = (*env)->FindClass(env, "windows/WindowInformation");
 	  constructor = (*env)->GetMethodID(env, cls, "<init>", "(ILjava/lang/String;Ljava/lang/String;ZLjava/awt/Point;)V");
+	  
 	  (*env)->NewGlobalRef( env, obj );
 	  info=(*env)->NewObject(env, cls, constructor, windowHandle, 
-		  Java_windows_TopLevelWindowsInformation_getWindowTitle(env, obj, windowHandle),
-		  Java_windows_TopLevelWindowsInformation_getWindowClassName(env, obj, windowHandle),
-		  Java_windows_TopLevelWindowsInformation_isWindowVisible(env, obj, windowHandle),
-		  Java_windows_TopLevelWindowsInformation_getTopLeftCorner(env, obj, windowHandle));
+		  getWindowTitle(env, obj, windowHandle),
+		  getWindowClassName(env, obj, windowHandle),
+		  isWindowVisible(env, obj, windowHandle),
+		  getTopLeftCorner(env, obj, windowHandle));
 	  (*env)->DeleteGlobalRef(env, obj);
 	  return info;
 

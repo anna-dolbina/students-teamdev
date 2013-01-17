@@ -97,9 +97,9 @@ public class HookListenersTest {
 		try {
 			for (int i = 0; i < 3; i++) {
 				frame.setState(Frame.ICONIFIED);
-				Thread.sleep(3000);
+				Thread.sleep(500);
 				frame.setState(Frame.NORMAL);
-				Thread.sleep(3000);
+				Thread.sleep(500);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

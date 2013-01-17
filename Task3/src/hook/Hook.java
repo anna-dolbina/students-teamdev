@@ -1,7 +1,7 @@
 package hook;
 
 /**
- * Interface describes general functionality of a hook.
+ * Interface of a hook.
  * 
  * @author anna.dolbina
  * 

@@ -9,7 +9,7 @@ import com.jniwrapper.UInt32;
 
 /**
  * Class represents a MSG structure described in Winuser.h. Contains message
- * information from a thread's message queue.
+ * information from a message queue.
  * 
  * @author anna.dolbina
  * 
@@ -121,6 +121,7 @@ public class Msg extends Structure {
 	}
 
 	/**
+	 * Sets the time at which the message was posted
 	 * 
 	 * @param time
 	 *            The time at which the message was posted.
@@ -136,7 +137,7 @@ public class Msg extends Structure {
 	 * @return the point representing cursor position
 	 */
 	public java.awt.Point getPoint() {
-		return new java.awt.Point((int) point.getX(), (int) point.getY());
+		return new java.awt.Point( (int) point.getX(), (int) point.getY());
 	}
 
 	/**
